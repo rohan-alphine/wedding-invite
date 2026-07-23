@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Cinzel:wght@400;500;600&family=Great+Vibes&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: oklch(97.5% 0.012 85); font-family: 'Cormorant Garamond', serif; -webkit-font-smoothing: antialiased; }
+  ::selection { background: oklch(80% 0.09 82); color: oklch(20% 0.02 60); }
+  @keyframes fadeInUp { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes floatPetal { 0% { transform: translateY(-10vh) translateX(0) rotate(0deg); opacity: 0; } 10% { opacity: 0.85; } 90% { opacity: 0.7; } 100% { transform: translateY(110vh) translateX(30px) rotate(300deg); opacity: 0; } }
+  @keyframes bounceDown { 0%, 100% { transform: translateY(0); opacity: 0.5; } 50% { transform: translateY(10px); opacity: 1; } }
+  @keyframes spinDots { to { transform: rotate(360deg); } }
+  @keyframes gentleFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  @keyframes checkPop { 0% { transform: scale(0); } 70% { transform: scale(1.15); } 100% { transform: scale(1); } }
+</style>
+</helmet>
+
+<div style="position:relative;background:oklch(97.5% 0.012 85);overflow-x:hidden;color:oklch(26% 0.02 55)">
+
+  <div style="position:fixed;top:0;left:0;height:3px;background:oklch(74% 0.13 82);z-index:200;width:{{ scrollProgressPct }}%;transition:width 0.1s linear"></div>
+
+  <div style="position:fixed;inset:0;pointer-events:none;z-index:5;overflow:hidden">
+    <sc-for list="{{ petals }}" as="p" hint-placeholder-count="12">
+      <div style="position:absolute;top:0;left:{{ p.left }}%;width:{{ p.size }}px;height:{{ p.size }}px;border-radius:50%;background:oklch(78% 0.07 25 / 0.55);animation:floatPetal {{ p.duration }}s linear {{ p.delay }}s infinite"></div>
+    </sc-for>
+  </div>
+
+  <audio ref="{{ setAudioRef }}" loop="">
+    <source src="assets/audio/song.mp3.mp3" type="audio/mp3"></source>
+  </audio>
+
+  <button onClick="{{ toggleMusic }}" style="position:fixed;bottom:28px;right:28px;width:56px;height:56px;border-radius:50%;border:1px solid oklch(74% 0.13 82 / 0.5);background:oklch(98.5% 0.006 85 / 0.9);backdrop-filter:blur(8px);z-index:150;cursor:pointer;font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.05em;color:oklch(45% 0.09 75);box-shadow:0 8px 24px oklch(30% 0.02 60 / 0.15);animation:gentleFloat 4s ease-in-out infinite">{{ musicLabel }}</button>
+
+  <!-- OPENING SCREEN -->
+  <section style="position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;background:oklch(97.5% 0.012 85);transition:opacity 0.9s ease,visibility 0.9s ease;opacity:{{ openingOpacity }};visibility:{{ openingVisibility }};pointer-events:{{ openingPointer }}">
+    <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 40%, oklch(93% 0.03 85 / 0.6), oklch(97.5% 0.012 85))"></div>
+    <div style="position:relative;text-align:center;padding:40px;max-width:520px">
+      <div style="font-family:'Cinzel',serif;font-size:clamp(20px,3vw,26px);color:oklch(70% 0.12 82)">✝</div>
+      <h3 style="font-family:'Cinzel',serif;font-weight:400;font-size:clamp(12px,1.6vw,15px);letter-spacing:0.25em;text-transform:uppercase;color:oklch(45% 0.03 60);margin:18px 0 10px">Together with their families</h3>
+      <h1 style="font-family:'Playfair Display',serif;font-weight:500;font-size:clamp(40px,8vw,68px);margin:6px 0;color:oklch(26% 0.02 55)">Rohan <span style="font-family:'Great Vibes',cursive;color:oklch(70% 0.12 82);font-size:1.15em;padding:0 10px">&amp;</span> Alphine</h1>
+      <p style="font-style:italic;font-size:clamp(17px,2.2vw,21px);color:oklch(40% 0.03 60);line-height:1.6;margin:20px 0 22px">joyfully invite you to share in the blessing of their engagement</p>
+      <p style="font-style:italic;font-size:clamp(16px,2vw,19px);color:oklch(38% 0.02 55);line-height:1.6;margin:22px 0 6px">"Therefore what God has joined together,<br>let no one separate."</p>
+      <p style="font-family:'Cinzel',serif;font-size:12px;letter-spacing:0.15em;color:oklch(55% 0.09 78);margin:0 0 34px">MATTHEW 19:6</p>
+      <button onClick="{{ openInvitation }}" style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:0.2em;text-transform:uppercase;padding:16px 44px;background:oklch(26% 0.02 55);color:oklch(97% 0.01 85);border:none;cursor:pointer;transition:letter-spacing 0.3s,background 0.3s" style-hover="letter-spacing:0.28em;background:oklch(35% 0.03 60)">Open Invitation</button>
+    </div>
+  </section>
+
+  <div style="{{ mainSiteStyle }}">
+
+    <!-- HERO -->
+    <section style="position:relative;min-height:100vh;display:flex;align-items:flex-end;justify-content:center;padding:0 24px 80px" data-screen-label="Hero" ref="{{ revealRef('hero') }}">
+      <div style="position:absolute;inset:0;z-index:0">
+        <image-slot id="hero-photo" shape="rect" placeholder="Drop couple hero photo" style="width:100%;height:100%"></image-slot>
+        <div style="position:absolute;inset:0;background:linear-gradient(180deg, oklch(20% 0.02 55 / 0.35), oklch(20% 0.02 55 / 0.15) 40%, oklch(20% 0.02 55 / 0.75));pointer-events:none"></div>
+      </div>
+      <div style="position:relative;z-index:1;text-align:center;color:oklch(98% 0.005 85);max-width:680px;opacity:{{ heroOpacity }};transform:{{ heroTransform }};transition:opacity 1s ease,transform 1s ease">
+        <h4 style="font-family:'Cinzel',serif;font-weight:400;font-size:clamp(11px,1.6vw,14px);letter-spacing:0.3em;text-transform:uppercase;margin:0 0 18px;color:oklch(88% 0.04 82)">The Engagement</h4>
+        <h1 style="font-family:'Playfair Display',serif;font-weight:500;font-size:clamp(52px,10vw,110px);margin:0;line-height:1.05">Rohan <span style="font-family:'Great Vibes',cursive;color:oklch(80% 0.1 78);font-size:0.7em;padding:0 6px">&amp;</span><br>Alphine</h1>
+        <h3 style="font-family:'Cinzel',serif;font-weight:400;font-size:clamp(15px,2vw,19px);letter-spacing:0.15em;margin:26px 0 14px;color:oklch(92% 0.02 85)">05 · 08 · 2026</h3>
+        <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(16px,2vw,20px);line-height:1.7;margin:0 0 34px;color:oklch(90% 0.02 85)">Two Hearts · One Covenant · Forever in Christ</p>
+        <a href="#welcome" style="display:inline-block;font-family:'Cinzel',serif;font-size:12px;letter-spacing:0.22em;text-transform:uppercase;padding:15px 40px;border:1px solid oklch(90% 0.03 85 / 0.7);color:oklch(98% 0.005 85);text-decoration:none;transition:background 0.3s,color 0.3s" style-hover="background:oklch(90% 0.03 85);color:oklch(22% 0.02 55)">Begin the Celebration</a>
+      </div>
+      <div style="position:absolute;bottom:24px;left:50%;transform:translateX(-50%);z-index:1;color:oklch(95% 0.01 85);text-align:center">
+        <div style="width:1px;height:36px;background:oklch(95% 0.01 85 / 0.7);margin:0 auto 6px;animation:bounceDown 2s ease-in-out infinite"></div>
+        <div style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.3em">SCROLL</div>
+      </div>
+    </section>
+
+    <!-- WELCOME -->
+    <section id="welcome" ref="{{ revealRef('welcome') }}" style="padding:clamp(80px,12vw,140px) 24px;text-align:center;max-width:760px;margin:0 auto;opacity:{{ sectionOpacity('welcome') }};transform:{{ sectionTransform('welcome') }};transition:opacity 0.9s ease,transform 0.9s ease">
+      <div style="font-family:'Cinzel',serif;font-size:12px;letter-spacing:0.3em;color:oklch(60% 0.1 80);margin-bottom:18px">WELCOME</div>
+      <div style="width:60px;height:1px;background:oklch(70% 0.12 82);margin:0 auto 30px"></div>
+      <h2 style="font-family:'Playfair Display',serif;font-weight:500;font-size:clamp(28px,4vw,42px);margin:0 0 24px;text-wrap:pretty">With hearts full of gratitude</h2>
+      <p style="font-size:clamp(17px,2vw,21px);line-height:1.85;color:oklch(38% 0.02 55);text-wrap:pretty">We are overjoyed to begin this sacred journey together, and we would be truly honored to have you share in our celebration of love, faith, and family.</p>
+    </section>
+
+    <!-- COUPLE STORY -->
+    <section ref="{{ revealRef('couple') }}" style="padding:clamp(60px,10vw,100px) 24px clamp(90px,12vw,140px);opacity:{{ sectionOpacity('couple') }};transform:{{ sectionTransform('couple') }};transition:opacity 0.9s ease,transform 0.9s ease">
+      <h2 style="text-align:center;font-family:'Playfair Display',serif;font-weight:500;font-size:clamp(28px,4vw,40px);margin:0 0 50px">The Couple</h2>
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(28px,5vw,60px);max-width:1000px;margin:0 auto">
+        <sc-for list="{{ coupleCards }}" as="person" hint-placeholder-count="2">
+          <div style="width:min(100%,340px);text-align:center;background:oklch(98.5% 0.006 85);padding:8px 8px 40px;position:relative;box-shadow:0 20px 50px oklch(30% 0.02 60 / 0.08)">
+            <div style="position:absolute;top:14px;left:14px;width:22px;height:22px;border-top:1px solid oklch(70% 0.12 82);border-left:1px solid oklch(70% 0.12 82);z-index:2"></div>
+            <div style="position:absolute;bottom:34px;right:14px;width:22px;height:22px;border-bottom:1px solid oklch(70% 0.12 82);border-right:1px solid oklch(70% 0.12 82);z-index:2"></div>
+            <image-slot id="{{ person.imgId }}" shape="rect" placeholder="Drop photo" style="width:100%;aspect-ratio:4/5"></image-slot>
+            <h3 style="font-family:'Playfair Display',serif;font-weight:500;font-size:28px;margin:26px 0 6px">{{ person.name }}</h3>
+            <p style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.15em;color:oklch(55% 0.09 78);text-transform:uppercase;margin:0 0 14px">{{ person.relation }}</p>
+            <h4 style="font-size:18px;font-weight:500;margin:4px 0;color:oklch(30% 0.02 55)">{{ person.father }}</h4>
+            <h4 style="font-size:18px;font-weight:500;margin:4px 0 14px;color:oklch(30% 0.02 55)">{{ person.mother }}</h4>
+            <p style="font-size:16px;color:oklch(48% 0.02 55);margin:2px 0">{{ person.addr1 }}</p>
+            <p style="font-size:16px;color:oklch(48% 0.02 55);margin:2px 0">{{ person.addr2 }}</p>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <!-- EVENT DETAILS -->
+    <section ref="{{ revealRef('events') }}" style="padding:clamp(60px,10vw,100px) 24px;background:oklch(93.5% 0.025 85);opacity:{{ sectionOpacity('events') }};transform:{{ sectionTransform('events') }};transition:opacity 0.9s ease,transform 0.9s ease">
+      <h2 style="text-align:center;font-family:'Playfair Display',serif;font-weight:500;font-size:clamp(28px,4vw,40px);margin:0 0 50px">Event Details</h2>
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(24px,4vw,40px);max-width:1000px;margin:0 auto">
+        <sc-for list="{{ eventCards }}" as="ev" hint-placeholder-count="2">
+          <div style="width:min(100%,420px);background:oklch(98.5% 0.006 85);padding:clamp(32px,5vw,48px);position:relative;box-shadow:0 20px 50px oklch(30% 0.02 60 / 0.07)">
+            <div style="position:absolute;top:0;left:0;right:0;height:3px;background:oklch(70% 0.12 82)"></div>
+            <div style="font-family:'Cinzel',serif;font-size:12px;letter-spacing:0.25em;color:oklch(55% 0.09 78);text-transform:uppercase;margin-bottom:10px">{{ ev.label }}</div>
+            <h3 style="font-family:'Playfair Display',serif;font-weight:500;font-size:26px;margin:0 0 18px">{{ ev.date }}</h3>
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <sc-for list="{{ ev.rows }}" as="row" hint-placeholder-count="3">
+                <div style="display:flex;gap:14px;align-items:baseline;border-top:1px solid oklch(90% 0.02 85);padding-top:12px">
+                  <div style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:0.15em;color:oklch(60% 0.1 80);text-transform:uppercase;width:96px;flex-shrink:0">{{ row.k }}</div>
+                  <div style="font-size:17px;color:oklch(32% 0.02 55)">{{ row.v }}</div>
+                </div>
+              </sc-for>
+            </div>
+            <sc-if value="{{ ev.map }}" hint-placeholder-val="{{ false }}">
+              <a href="{{ ev.mapHref }}" target="_blank" style="display:inline-block;margin-top:24px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:oklch(26% 0.02 55);border-bottom:1px solid oklch(70% 0.12 82);text-decoration:none;padding-bottom:2px">View Map ↗</a>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <!-- COUNTDOWN -->
+    <section ref="{{ revealRef('countdown') }}" style="padding:clamp(70px,10vw,120px) 24px;text-align:center;opacity:{{ sectionOpacity('countdown') }};transform:{{ sectionTransform('countdown') }};transition:opacity 0.9s ease,transform 0.9s ease">
+      <h2 style="font-family:'Playfair Display',serif;font-weight:500;font-size:clamp(28px,4vw,40px);margin:0 0 46px">Counting Down To Our Wedding</h2>
+      <div style="display:inline-flex;flex-wrap:wrap;justify-content:center;gap:clamp(14px,2.5vw,26px);padding:clamp(28px,5vw,48px) clamp(20px,5vw,56px);background:oklch(98.5% 0.006 85 / 0.55);backdrop-filter:blur(14px);border:1px solid oklch(100% 0 0 / 0.4);box-shadow:0 30px 60px oklch(30% 0.02 60 / 0.1)">
+        <sc-for list="{{ countdownParts }}" as="part" hint-placeholder-count="4">
+          <div style="width:clamp(70px,12vw,110px)">
+            <div style="font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(34px,6vw,58px);color:oklch(26% 0.02 55);line-height:1">{{ part.value }}</div>
+            <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:oklch(55% 0.09 78);margin-top:8px">{{ part.label }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <!-- GALLERY -->
+    <section ref="{{ revealRef('gallery') }}" style="padding:clamp(60px,10vw,100px) 24px;background:oklch(93.5% 0.025 85);opacity:{{ sectionOpacity('gallery') }};transform:{{ sectionTransform('gallery') }};transition:opacity 0.9s ease,transform 0.9s ease">
+      <h2 style="text-align:center;font-family:'Playfair Display',serif;font-weight:500;font-size:clamp(28px,4vw,40px);margin:0 0 46px">A Glimpse of Us</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;max-width:1100px;margin:0 auto">
+        <sc-for list="{{ galleryImages }}" as="g" hint-placeholder-count="6">
+          <div style="grid-row:span {{ g.span }};cursor:pointer;overflow:hidden;position:relative" onClick="{{ () => openLightbox(g.idx) }}">
+            <image-slot id="{{ g.id }}" shape="rect" placeholder="Drop gallery photo" style="width:100%;height:100%;min-height:180px;transition:transform 0.5s ease" style-hover="transform:scale(1.05)"></image-slot>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <sc-if value="{{ lightboxSrc }}" hint-placeholder-val="{{ false }}">
+      <div onClick="{{ closeLightbox }}" style="position:fixed;inset:0;background:oklch(15% 0.01 55 / 0.9);z-index:300;display:flex;align-items:center;justify-content:center;padding:40px;cursor:zoom-out">
+        <div style="max-width:900px;max-height:85vh;width:100%;height:100%;position:relative">
+          <image-slot id="{{ lightboxSrc }}" shape="rect" placeholder="Photo" style="width:100%;height:100%"></image-slot>
+        </div>
+        <button onClick="{{ closeLightbox }}" style="position:absolute;top:28px;right:28px;background:none;border:1px solid oklch(95% 0.01 85 / 0.6);color:oklch(95% 0.01 85);width:42px;height:42px;border-radius:50%;cursor:pointer;font-size:18px">✕</button>
+      </div>
+    </sc-if>
+
+    <!-- SCHEDULE -->
+    <section ref="{{ revealRef('schedule') }}" style="padding:clamp(60px,10vw,100px) 24px;max-width:680px;margin:0 auto;opacity:{{ sectionOpacity('schedule') }};transform:{{ sectionTransform('schedule') }};transition:opacity 0.9s ease,transform 0.9s ease">
+      <h2 style="text-align:center;font-family:'Playfair Display',serif;font-weight:500;font-size:clamp(28px,4vw,40px);margin:0 0 50px">Wedding Timeline</h2>
+      <div style="position:relative;padding-left:32px">
+        <div style="position:absolute;left:5px;top:6px;bottom:6px;width:1px;background:oklch(80% 0.05 82)"></div>
+        <sc-for list="{{ scheduleItems }}" as="item" hint-placeholder-count="3">
+          <div style="position:relative;padding-bottom:38px">
+            <div style="position:absolute;left:-32px;top:4px;width:11px;height:11px;border-radius:50%;background:oklch(98.5% 0.006 85);border:2px solid oklch(70% 0.12 82)"></div>
+            <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.15em;color:oklch(55% 0.09 78);text-transform:uppercase;margin-bottom:6px">{{ item.date }} · {{ item.time }}</div>
+            <h4 style="font-family:'Playfair Display',serif;font-weight:500;font-size:22px;margin:0 0 6px">{{ item.title }}</h4>
+            <p style="font-size:16px;color:oklch(45% 0.02 55);margin:0;line-height:1.6">{{ item.desc }}</p>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <!-- LOCATION -->
+    <section ref="{{ revealRef('location') }}" style="padding:clamp(60px,10vw,100px) 24px;background:oklch(93.5% 0.025 85);opacity:{{ sectionOpacity('location') }};transform:{{ sectionTransform('location') }};transition:opacity 0.9s ease,transform 0.9s ease">
+      <h2 style="text-align:center;font-family:'Playfair Display',serif;font-weight:500;font-size:clamp(28px,4vw,40px);margin:0 0 46px">Location</h2>
+      <div style="display:flex;flex-wrap:wrap-reverse;gap:0;max-width:1000px;margin:0 auto;background:oklch(98.5% 0.006 85);box-shadow:0 20px 50px oklch(30% 0.02 60 / 0.08)">
+        <div style="flex:1 1 340px;padding:clamp(32px,5vw,52px)">
+          <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.2em;color:oklch(55% 0.09 78);text-transform:uppercase;margin-bottom:12px">Engagement &amp; Reception</div>
+          <h3 style="font-family:'Playfair Display',serif;font-weight:500;font-size:26px;margin:0 0 10px">St. Sebastian's Catholic Church</h3>
+          <p style="font-size:17px;color:oklch(42% 0.02 55);margin:0 0 24px">Mutholapuram, Kerala</p>
+          <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.2em;color:oklch(55% 0.09 78);text-transform:uppercase;margin-bottom:12px">Holy Matrimony</div>
+          <p style="font-size:17px;color:oklch(42% 0.02 55);margin:0 0 26px">Venue to be announced</p>
+          <a href="https://maps.app.goo.gl/XCu8j8SNZBQT8ANt7" target="_blank" style="display:inline-block;font-family:'Cinzel',serif;font-size:12px;letter-spacing:0.2em;text-transform:uppercase;padding:15px 34px;background:oklch(26% 0.02 55);color:oklch(97% 0.01 85);text-decoration:none">Get Directions</a>
+        </div>
+        <a href="https://maps.app.goo.gl/XCu8j8SNZBQT8ANt7" target="_blank" style="flex:1 1 380px;min-height:320px;position:relative;background:repeating-linear-gradient(135deg, oklch(90% 0.02 85), oklch(90% 0.02 85) 12px, oklch(93% 0.02 85) 12px, oklch(93% 0.02 85) 24px);display:flex;align-items:center;justify-content:center;text-decoration:none;cursor:pointer">
+          <div style="font-family:'Cinzel',serif;font-size:12px;letter-spacing:0.15em;text-transform:uppercase;color:oklch(30% 0.02 55);background:oklch(98.5% 0.006 85 / 0.9);padding:14px 26px;border:1px solid oklch(70% 0.12 82)">Open in Google Maps ↗</div>
+        </a>
+      </div>
+    </section>
+
+    <!-- RSVP -->
+    <section ref="{{ revealRef('rsvp') }}" style="padding:clamp(70px,10vw,120px) 24px;max-width:560px;margin:0 auto;opacity:{{ sectionOpacity('rsvp') }};transform:{{ sectionTransform('rsvp') }};transition:opacity 0.9s ease,transform 0.9s ease">
+      <h2 style="text-align:center;font-family:'Playfair Display',serif;font-weight:500;font-size:clamp(28px,4vw,40px);margin:0 0 14px">RSVP</h2>
+      <p style="text-align:center;font-size:17px;color:oklch(45% 0.02 55);margin:0 0 44px">Kindly respond by 20 July 2026</p>
+      <sc-if value="{{ isRsvpDone }}" hint-placeholder-val="{{ false }}">
+        <div style="text-align:center;padding:50px 20px">
+          <div style="width:64px;height:64px;border-radius:50%;background:oklch(70% 0.12 82 / 0.15);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;animation:checkPop 0.5s ease">
+            <div style="font-size:28px;color:oklch(55% 0.09 78)">✓</div>
+          </div>
+          <h3 style="font-family:'Playfair Display',serif;font-weight:500;font-size:24px;margin:0 0 10px">Thank You!</h3>
+          <p style="color:oklch(45% 0.02 55);font-size:17px">Your response has been recorded. We can't wait to celebrate with you.</p>
+        </div>
+      </sc-if>
+      <sc-if value="{{ isRsvpForm }}" hint-placeholder-val="{{ true }}">
+        <form onSubmit="{{ submitRsvp }}" style="display:flex;flex-direction:column;gap:22px">
+          <div>
+            <label style="display:block;font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.15em;color:oklch(55% 0.09 78);text-transform:uppercase;margin-bottom:8px">Full Name</label>
+            <input value="{{ rsvpName }}" onChange="{{ onRsvpNameChange }}" required="" placeholder="Your name" style="width:100%;padding:14px 4px;font-size:17px;font-family:'Cormorant Garamond',serif;border:none;border-bottom:1px solid oklch(80% 0.02 85);background:transparent;outline:none;transition:border-color 0.3s" style-focus="border-color:oklch(70% 0.12 82)"></input>
+          </div>
+          <div>
+            <label style="display:block;font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.15em;color:oklch(55% 0.09 78);text-transform:uppercase;margin-bottom:8px">Number of Guests</label>
+            <select value="{{ rsvpGuests }}" onChange="{{ onRsvpGuestsChange }}" style="width:100%;padding:14px 4px;font-size:17px;font-family:'Cormorant Garamond',serif;border:none;border-bottom:1px solid oklch(80% 0.02 85);background:transparent;outline:none">
+              <sc-for list="{{ guestOptions }}" as="n" hint-placeholder-count="5">
+                <option value="{{ n }}">{{ n }}</option>
+              </sc-for>
+            </select>
+          </div>
+          <div>
+            <label style="display:block;font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.15em;color:oklch(55% 0.09 78);text-transform:uppercase;margin-bottom:10px">Will you attend?</label>
+            <div style="display:flex;gap:12px">
+              <button type="button" onClick="{{ () => setAttending('yes') }}" style="{{ attendYesStyle }}">Joyfully Yes</button>
+              <button type="button" onClick="{{ () => setAttending('no') }}" style="{{ attendNoStyle }}">Regretfully No</button>
+            </div>
+          </div>
+          <div>
+            <label style="display:block;font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.15em;color:oklch(55% 0.09 78);text-transform:uppercase;margin-bottom:8px">Message (optional)</label>
+            <textarea value="{{ rsvpMessage }}" onChange="{{ onRsvpMessageChange }}" rows="3" placeholder="A note for the couple" style="width:100%;padding:14px 4px;font-size:16px;font-family:'Cormorant Garamond',serif;border:none;border-bottom:1px solid oklch(80% 0.02 85);background:transparent;outline:none;resize:vertical;transition:border-color 0.3s" style-focus="border-color:oklch(70% 0.12 82)"></textarea>
+          </div>
+          <button type="submit" style="margin-top:10px;font-family:'Cinzel',serif;font-size:13px;letter-spacing:0.2em;text-transform:uppercase;padding:17px;background:oklch(26% 0.02 55);color:oklch(97% 0.01 85);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:12px">
+            <sc-if value="{{ isSubmitting }}" hint-placeholder-val="{{ false }}">
+              <div style="width:16px;height:16px;border:2px solid oklch(97% 0.01 85 / 0.35);border-top-color:oklch(97% 0.01 85);border-radius:50%;animation:spinDots 0.7s linear infinite"></div>
+            </sc-if>
+            <span>{{ submitLabel }}</span>
+          </button>
+        </form>
+      </sc-if>
+    </section>
+
+    <!-- BLESSING VERSE -->
+    <section ref="{{ revealRef('verse') }}" style="padding:clamp(70px,10vw,110px) 24px;text-align:center;background:oklch(93.5% 0.025 85);opacity:{{ sectionOpacity('verse') }};transform:{{ sectionTransform('verse') }};transition:opacity 0.9s ease,transform 0.9s ease">
+      <div style="font-family:'Great Vibes',cursive;font-size:40px;color:oklch(70% 0.12 82);margin-bottom:10px">"</div>
+      <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(19px,2.6vw,26px);line-height:1.8;max-width:620px;margin:0 auto 18px;color:oklch(32% 0.02 55)">Love is patient, love is kind. It does not envy, it does not boast, it is not proud.</p>
+      <p style="font-family:'Cinzel',serif;font-size:12px;letter-spacing:0.2em;color:oklch(55% 0.09 78)">1 CORINTHIANS 13:4</p>
+    </section>
+
+    <!-- GIFTS -->
+    <section ref="{{ revealRef('gifts') }}" style="padding:clamp(60px,10vw,100px) 24px;text-align:center;max-width:600px;margin:0 auto;opacity:{{ sectionOpacity('gifts') }};transform:{{ sectionTransform('gifts') }};transition:opacity 0.9s ease,transform 0.9s ease">
+      <h2 style="font-family:'Playfair Display',serif;font-weight:500;font-size:clamp(26px,4vw,36px);margin:0 0 20px">A Word on Gifts</h2>
+      <div style="width:60px;height:1px;background:oklch(70% 0.12 82);margin:0 auto 26px"></div>
+      <p style="font-size:17px;line-height:1.85;color:oklch(42% 0.02 55)">Your presence at our wedding is the greatest gift of all. Should you wish to honor us further, your blessings and prayers will mean the world to us.</p>
+    </section>
+
+    <!-- FOOTER -->
+    <footer style="padding:clamp(60px,8vw,90px) 24px 40px;text-align:center;background:oklch(26% 0.02 55);color:oklch(90% 0.01 85)">
+      <div style="font-family:'Great Vibes',cursive;font-size:34px;color:oklch(78% 0.1 82);margin-bottom:14px">Rohan &amp; Alphine</div>
+      <p style="font-size:16px;color:oklch(78% 0.01 85);max-width:420px;margin:0 auto 22px;line-height:1.7">With the blessings of our families, we invite you to celebrate our special day.</p>
+      <div style="width:40px;height:1px;background:oklch(60% 0.02 85 / 0.4);margin:0 auto 22px"></div>
+      <p style="font-size:13px;color:oklch(65% 0.01 85);letter-spacing:0.05em">© 2026 Rohan &amp; Alphine Wedding</p>
+    </footer>
+
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.petals = Array.from({ length: 12 }).map((_, i) => ({
+      left: (i * 8.3 + 3) % 100,
+      size: 6 + (i % 4) * 2,
+      delay: (i * 1.3) % 9,
+      duration: 12 + (i % 5) * 2
+    }));
+    this.sectionRefs = {};
+    this.state = {
+      opened: false,
+      musicOn: false,
+      scrollPct: 0,
+      revealed: {},
+      lightboxIdx: null,
+      rsvpName: '',
+      rsvpGuests: '1',
+      rsvpAttending: 'yes',
+      rsvpMessage: '',
+      rsvpStatus: 'idle',
+      countdown: { d: '00', h: '00', m: '00', s: '00' }
+    };
+  }
+
+  componentDidMount() {
+    this.updateCountdown();
+    this.countdownTimer = setInterval(() => this.updateCountdown(), 1000);
+    this.onScroll = () => {
+      const el = document.documentElement;
+      const max = el.scrollHeight - el.clientHeight;
+      this.setState({ scrollPct: max > 0 ? Math.min(100, (el.scrollTop / max) * 100) : 0 });
+    };
+    window.addEventListener('scroll', this.onScroll, { passive: true });
+    this.observer = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          const key = e.target.getAttribute('data-reveal-key');
+          this.setState((s) => ({ revealed: { ...s.revealed, [key]: true } }));
+          this.observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    Object.entries(this.sectionRefs).forEach(([key, el]) => {
+      if (!el) return;
+      el.setAttribute('data-reveal-key', key);
+      this.observer.observe(el);
+    });
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.countdownTimer);
+    window.removeEventListener('scroll', this.onScroll);
+    if (this.observer) this.observer.disconnect();
+  }
+
+  revealRef(key) {
+    return (el) => { if (el) this.sectionRefs[key] = el; };
+  }
+
+  updateCountdown() {
+    const target = new Date('2026-08-08T00:00:00');
+    const now = new Date();
+    let diff = target.getTime() - now.getTime();
+    if (diff < 0) diff = 0;
+    const pad = (n) => String(n).padStart(2, '0');
+    this.setState({
+      countdown: {
+        d: pad(Math.floor(diff / 86400000)),
+        h: pad(Math.floor(diff / 3600000) % 24),
+        m: pad(Math.floor(diff / 60000) % 60),
+        s: pad(Math.floor(diff / 1000) % 60)
+      }
+    });
+  }
+
+  openInvitation = () => {
+    if (this.audioEl) { this.audioEl.play().catch(() => {}); }
+    this.setState({ opened: true, musicOn: true });
+  };
+
+  toggleMusic = () => {
+    this.setState((s) => {
+      const next = !s.musicOn;
+      if (this.audioEl) { next ? this.audioEl.play().catch(() => {}) : this.audioEl.pause(); }
+      return { musicOn: next };
+    });
+  };
+
+  setAudioRef = (el) => { this.audioEl = el; };
+
+  openLightbox = (idx) => { this.setState({ lightboxIdx: idx }); };
+  closeLightbox = () => { this.setState({ lightboxIdx: null }); };
+
+  onRsvpNameChange = (e) => this.setState({ rsvpName: e.target.value });
+  onRsvpGuestsChange = (e) => this.setState({ rsvpGuests: e.target.value });
+  onRsvpMessageChange = (e) => this.setState({ rsvpMessage: e.target.value });
+  setAttending = (v) => this.setState({ rsvpAttending: v });
+
+  submitRsvp = (e) => {
+    e.preventDefault();
+    this.setState({ rsvpStatus: 'loading' });
+    setTimeout(() => this.setState({ rsvpStatus: 'success' }), 1300);
+  };
+
+  renderVals() {
+    const { opened, musicOn, scrollPct, revealed, lightboxIdx, rsvpAttending, rsvpStatus, countdown, rsvpName, rsvpGuests, rsvpMessage } = this.state;
+
+    const coupleCards = [
+      { imgId: 'photo-alphine', name: 'Alphine', relation: 'Daughter of', father: 'Mr. Roy N Paul', mother: 'Mrs. Jessy Roy', addr1: 'Jezra Bhawan (Neduvelil)', addr2: 'Mutholapuram' },
+      { imgId: 'photo-rohan', name: 'Rohan', relation: 'Son of', father: 'Mr. Paul Jacob', mother: 'Mrs. Nisa Paul', addr1: 'Kalapurackal', addr2: 'Kizhakkambalam' }
+    ];
+
+    const eventCards = [
+      { label: 'Engagement Ceremony', date: '05 August 2026', rows: [ { k: 'Time', v: '12:00 PM Onwards' }, { k: 'Church', v: "St. Sebastian's Catholic Church" }, { k: 'Reception', v: 'Parish Hall, Mutholapuram' } ], map: true, mapHref: 'https://maps.app.goo.gl/XCu8j8SNZBQT8ANt7' },
+      { label: 'Holy Matrimony', date: '08 August 2026', rows: [ { k: 'Venue', v: 'To be announced' } ], map: false, mapHref: '' }
+    ];
+
+    const galleryImages = [0,1,2,3,4,5].map((i) => ({ id: 'gallery-' + i, idx: i, span: i % 3 === 0 ? 2 : 1 }));
+
+    const scheduleItems = [
+      { date: '05 Aug', time: '12:00 PM', title: 'Engagement Ceremony', desc: "St. Sebastian's Catholic Church, Mutholapuram" },
+      { date: '05 Aug', time: 'Afternoon', title: 'Lunch & Reception', desc: 'Parish Hall, Mutholapuram' },
+      { date: '08 Aug', time: 'TBD', title: 'Holy Matrimony', desc: 'Venue to be announced' }
+    ];
+
+    const countdownParts = [
+      { value: countdown.d, label: 'Days' },
+      { value: countdown.h, label: 'Hours' },
+      { value: countdown.m, label: 'Minutes' },
+      { value: countdown.s, label: 'Seconds' }
+    ];
+
+    const guestOptions = ['1', '2', '3', '4', '5'];
+
+    const btnBase = 'flex:1;padding:14px;font-family:\'Cinzel\',serif;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;border:1px solid oklch(70% 0.12 82);transition:background 0.3s,color 0.3s;';
+    const attendYesStyle = btnBase + (rsvpAttending === 'yes' ? 'background:oklch(26% 0.02 55);color:oklch(97% 0.01 85);' : 'background:transparent;color:oklch(35% 0.02 55);');
+    const attendNoStyle = btnBase + (rsvpAttending === 'no' ? 'background:oklch(26% 0.02 55);color:oklch(97% 0.01 85);' : 'background:transparent;color:oklch(35% 0.02 55);');
+
+    return {
+      petals: this.petals,
+      scrollProgressPct: scrollPct,
+      musicLabel: musicOn ? 'Pause' : 'Music',
+      setAudioRef: this.setAudioRef,
+      toggleMusic: this.toggleMusic,
+      openInvitation: this.openInvitation,
+      openingOpacity: opened ? 0 : 1,
+      openingVisibility: opened ? 'hidden' : 'visible',
+      openingPointer: opened ? 'none' : 'auto',
+      mainSiteStyle: '',
+      heroOpacity: 1,
+      heroTransform: 'translateY(0)',
+      revealRef: (key) => this.revealRef(key),
+      sectionOpacity: (key) => (revealed[key] ? 1 : 0),
+      sectionTransform: (key) => (revealed[key] ? 'translateY(0)' : 'translateY(30px)'),
+      coupleCards,
+      eventCards,
+      countdownParts,
+      galleryImages,
+      openLightbox: this.openLightbox,
+      closeLightbox: this.closeLightbox,
+      lightboxSrc: lightboxIdx !== null ? 'gallery-' + lightboxIdx : null,
+      scheduleItems,
+      isRsvpDone: rsvpStatus === 'success',
+      isRsvpForm: rsvpStatus !== 'success',
+      isSubmitting: rsvpStatus === 'loading',
+      submitLabel: rsvpStatus === 'loading' ? 'Sending...' : 'Send RSVP',
+      submitRsvp: this.submitRsvp,
+      rsvpName,
+      onRsvpNameChange: this.onRsvpNameChange,
+      rsvpGuests,
+      onRsvpGuestsChange: this.onRsvpGuestsChange,
+      guestOptions,
+      onRsvpMessageChange: this.onRsvpMessageChange,
+      rsvpMessage,
+      setAttending: this.setAttending,
+      attendYesStyle,
+      attendNoStyle
+    };
+  }
+}
+</script>
+</body>
+</html>
